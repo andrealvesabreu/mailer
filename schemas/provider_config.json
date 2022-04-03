@@ -1,0 +1,511 @@
+{
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "type": "object",
+    "if": {
+      "properties": {
+        "provider": {
+          "const": "smtp"
+        }
+      }
+    },
+    "then": {
+      "$ref": "#/definitions/smtp"
+    },
+    "else": {
+      "if": {
+        "properties": {
+          "provider": {
+            "const": "ses"
+          }
+        }
+      },
+      "then": {
+        "$ref": "#/definitions/ses"
+      },
+      "else": {
+        "if": {
+          "properties": {
+            "provider": {
+              "const": "gmail"
+            }
+          }
+        },
+        "then": {
+          "$ref": "#/definitions/gmail"
+        },
+        "else": {
+          "if": {
+            "properties": {
+              "provider": {
+                "const": "mailgun"
+              }
+            }
+          },
+          "then": {
+            "$ref": "#/definitions/mailgun"
+          },
+          "else": {
+            "if": {
+              "properties": {
+                "provider": {
+                  "const": "mailjet"
+                }
+              }
+            },
+            "then": {
+              "$ref": "#/definitions/mailjet"
+            },
+            "else": {
+              "if": {
+                "properties": {
+                  "provider": {
+                    "const": "postmark"
+                  }
+                }
+              },
+              "then": {
+                "$ref": "#/definitions/postmark"
+              },
+              "else": {
+                "if": {
+                  "properties": {
+                    "provider": {
+                      "const": "sendgrid"
+                    }
+                  }
+                },
+                "then": {
+                  "$ref": "#/definitions/sendgrid"
+                },
+                "else": {
+                  "if": {
+                    "properties": {
+                      "provider": {
+                        "const": "sendinblue"
+                      }
+                    }
+                  },
+                  "then": {
+                    "$ref": "#/definitions/sendinblue"
+                  },
+                  "else": {
+                    "if": {
+                      "properties": {
+                        "provider": {
+                          "const": "ohmysmtp"
+                        }
+                      }
+                    },
+                    "then": {
+                      "$ref": "#/definitions/ohmysmtp"
+                    },
+                    "else": {
+                      "$ref": "#/definitions/maildocker"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "required": [
+      "provider"
+    ]
+  },
+  "definitions": {
+    "smtp": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "type": "string",
+          "enum": [
+            "smtp"
+          ]
+        },
+        "driver": {
+          "enum": [
+            "smtp"
+          ]
+        },
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "domain": {
+          "type": "string"
+        },
+        "port": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 65535,
+          "multipleOf": 1
+        }
+      },
+      "required": [
+        "driver",
+        "username",
+        "password",
+        "domain",
+        "port"
+      ]
+    },
+    "ses": {
+      "type": "object",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "provider": {
+              "type": "string",
+              "enum": [
+                "ses"
+              ]
+            },
+            "driver": {
+              "enum": [
+                "smtp"
+              ]
+            },
+            "username": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "driver",
+            "username",
+            "password"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "provider": {
+              "type": "string",
+              "enum": [
+                "ses"
+              ]
+            },
+            "driver": {
+              "enum": [
+                "http",
+                "api"
+              ]
+            },
+            "access_key": {
+              "type": "string"
+            },
+            "secret_key": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "driver",
+            "access_key",
+            "secret_key"
+          ]
+        }
+      ]
+    },
+    "gmail": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "type": "string",
+          "enum": [
+            "gmail"
+          ]
+        },
+        "driver": {
+          "enum": [
+            "smtp"
+          ]
+        },
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "driver",
+        "username",
+        "password"
+      ]
+    },
+    "mailgun": {
+      "type": "object",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "provider": {
+              "type": "string",
+              "enum": [
+                "mailgun"
+              ]
+            },
+            "driver": {
+              "enum": [
+                "smtp"
+              ]
+            },
+            "username": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "driver",
+            "username",
+            "password"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "provider": {
+              "type": "string",
+              "enum": [
+                "mailgun"
+              ]
+            },
+            "driver": {
+              "enum": [
+                "http",
+                "api"
+              ]
+            },
+            "key": {
+              "type": "string"
+            },
+            "domain": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "driver",
+            "key",
+            "domain"
+          ]
+        }
+      ]
+    },
+    "mailjet": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "type": "string",
+          "enum": [
+            "mailjet"
+          ]
+        },
+        "driver": {
+          "enum": [
+            "smtp",
+            "api"
+          ]
+        },
+        "access_key": {
+          "type": "string"
+        },
+        "secret_key": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "driver",
+        "access_key",
+        "secret_key"
+      ]
+    },
+    "postmark": {
+      "type": "object",
+      "oneOf": [
+        {
+          "properties": {
+            "provider": {
+              "type": "string",
+              "enum": [
+                "postmark"
+              ]
+            },
+            "driver": {
+              "enum": [
+                "smtp"
+              ]
+            },
+            "id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "driver",
+            "id"
+          ]
+        },
+        {
+          "properties": {
+            "provider": {
+              "type": "string",
+              "enum": [
+                "postmark"
+              ]
+            },
+            "driver": {
+              "enum": [
+                "api"
+              ]
+            },
+            "key": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "driver",
+            "key"
+          ]
+        }
+      ]
+    },
+    "sendgrid": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "type": "string",
+          "enum": [
+            "sendgrid"
+          ]
+        },
+        "driver": {
+          "enum": [
+            "smtp",
+            "api"
+          ]
+        },
+        "key": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "driver",
+        "key"
+      ]
+    },
+    "sendinblue": {
+      "type": "object",
+      "oneOf": [
+        {
+          "properties": {
+            "provider": {
+              "type": "string",
+              "enum": [
+                "sendinblue"
+              ]
+            },
+            "driver": {
+              "enum": [
+                "smtp"
+              ]
+            },
+            "username": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "driver",
+            "username",
+            "password"
+          ]
+        },
+        {
+          "properties": {
+            "provider": {
+              "type": "string",
+              "enum": [
+                "sendinblue"
+              ]
+            },
+            "driver": {
+              "enum": [
+                "api"
+              ]
+            },
+            "key": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "driver",
+            "key"
+          ]
+        }
+      ]
+    },
+    "ohmysmtp": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "type": "string",
+          "enum": [
+            "ohmysmtp"
+          ]
+        },
+        "driver": {
+          "enum": [
+            "smtp",
+            "api"
+          ]
+        },
+        "api_token": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "driver",
+        "api_token"
+      ]
+    },
+    "maildocker": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "type": "string",
+          "enum": [
+            "maildocker"
+          ]
+        },
+        "driver": {
+          "enum": [
+            "api"
+          ]
+        },
+        "access_key": {
+          "type": "string"
+        },
+        "secret_key": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "driver",
+        "access_key",
+        "secret_key"
+      ]
+    }
+  }
+}

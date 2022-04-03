@@ -1,0 +1,32 @@
+{
+	"autoload" : {
+		"psr-4" : {
+			"Inspire\\Mailer\\" : "src",
+			"Inspire\\Mailer\\Maildocker\\" : "src/lib/Maildocker"
+		}
+	},
+	"require" : {
+		"inspire/core" : "^0.1.0",
+		"inspire/queue" : "^0.1.0",
+		"symfony/amazon-mailer" : "^5.3.4",
+		"symfony/google-mailer" : "^5.3.0",
+		"symfony/mailchimp-mailer" : "^5.3.4",
+		"symfony/mailgun-mailer" : "^5.3.4",
+		"symfony/mailjet-mailer" : "^5.3.4",
+		"symfony/postmark-mailer" : "^5.3.4",
+		"symfony/sendgrid-mailer" : "^5.3.7",
+		"symfony/sendinblue-mailer" : "^5.3.4"
+	},
+	"name" : "inspire/mailer",
+	"license" : "MIT",
+	"type" : "library",
+	"description" : "Simple mail sender library",
+	"authors" : [{
+			"name" : "André Alves",
+			"email" : "aluisalves0@gmail.com"
+		}
+	],
+	"keywords" : [
+		"Mailer"
+	]
+}

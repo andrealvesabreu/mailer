@@ -1,0 +1,127 @@
+{
+  "type": "object",
+  "properties": {
+    "from": {
+      "type": "object",
+      "$ref": "#/definitions/address"
+    },
+    "replyTo": {
+      "type": "object",
+      "$ref": "#/definitions/address"
+    },
+    "to": {
+      "type": "array",
+      "minItens": 1,
+      "itens": {
+        "type": "object",
+        "$ref": "#/definitions/address"
+      }
+    },
+    "cc": {
+      "type": "array",
+      "itens": {
+        "type": "object",
+        "$ref": "#/definitions/address"
+      }
+    },
+    "bcc": {
+      "type": "array",
+      "itens": {
+        "type": "object",
+        "$ref": "#/definitions/address"
+      }
+    },
+    "subject": {
+      "type": "string",
+      "minLength": 1
+    },
+    "text": {
+      "type": "object",
+      "$ref": "#/definitions/content"
+    },
+    "attachments": {
+      "type": "array",
+      "minItens": 0,
+      "itens": {
+        "type": "object",
+        "$ref": "#/definitions/attachment"
+      }
+    }
+  },
+  "required": [
+    "from",
+    "replyTo",
+    "to",
+    "subject",
+    "text"
+  ],
+  "definitions": {
+    "address": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "format": "email"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "address"
+      ]
+    },
+    "content": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "charset": {
+          "type": "string"
+        }
+      }
+    },
+    "attachment": {
+      "type": "object",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "content-type": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "path"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "body": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "content-type": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "body",
+            "name",
+            "content-type"
+          ]
+        }
+      ]
+    }
+  }
+}
