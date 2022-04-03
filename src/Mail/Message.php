@@ -495,10 +495,10 @@ class Message
                     case 'mailgun':
                         switch ($configMail['driver']) {
                             case 'api':
-                                $transport = Transport::fromDsn("mailgun+api://{$configMail['key']}:{$$configMail['domain']}@default");
+                                $transport = Transport::fromDsn("mailgun+api://{$configMail['key']}:{$configMail['domain']}@default");
                                 break;
                             case 'http':
-                                $transport = Transport::fromDsn("mailgun+https://{$configMail['key']}:{$$configMail['domain']}@default");
+                                $transport = Transport::fromDsn("mailgun+https://{$configMail['key']}:{$configMail['domain']}@default");
                                 break;
                             case 'smtp':
                                 $transport = Transport::fromDsn("mailgun+smtp://{$configMail['username']}:{$configMail['password']}@default");
