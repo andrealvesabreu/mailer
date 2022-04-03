@@ -574,9 +574,10 @@ class Message
                         break;
                 }
                 if (! $transport !== null) {
-                    $mailer = new Mailer($transport);
-                    var_dump($mailer->send($email));
-                    return new SystemMessage('Validating yet', 'Validating data');
+                    // $mailer = new Mailer($transport);
+                    $resp = $transport->send($email);
+                    // var_dump($resp->getDebug());
+                    return new SystemMessage('Mail sent', '1');
                 } else {
                     return new SystemMessage("Invalid provider: {$configMail['provider']}", '0', SystemMessage::MSG_ERROR);
                 }
