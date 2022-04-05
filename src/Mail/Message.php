@@ -4,15 +4,14 @@ namespace Inspire\Mailer\Mail;
 
 use Inspire\Support\Message\System\SystemMessage;
 use Symfony\Component\Mailer\ {
-    Mailer,
     Transport
 };
 use Inspire\Config\JsonValidator;
 use Inspire;
-use Ramsey\Uuid\Provider\Dce\SystemDceSecurityProvider;
+use Inspire\Mailer\Maildocker\Message as MaildockerMessage;
 
 /**
- * Description of Mail
+ * Description of Message
  *
  * @author aalves
  */
@@ -327,7 +326,7 @@ class Message
                 /**
                  * Maildocker message
                  */
-                $email = (new Inspire\Mailer\Maildocker\Message())->setSubject($this->subject)
+                $email = (new MaildockerMessage())->setSubject($this->subject)
                     ->setText($this->text['text'] ?? '')
                     ->setHtml($this->html['text'] ?? '');
                 /**
@@ -573,11 +572,15 @@ class Message
                         }
                         break;
                 }
+
                 if (! $transport !== null) {
                     // $mailer = new Mailer($transport);
                     $resp = $transport->send($email);
-                    // var_dump($resp->getDebug());
-                    return new SystemMessage('Mail sent', '1');
+                    $ok = new SystemMessage('Mail sent', '1', SystemMessage::MSG_OK);
+                    $ok->addExtra([
+                        'id' => $resp->getMessageId()
+                    ]);
+                    return $ok;
                 } else {
                     return new SystemMessage("Invalid provider: {$configMail['provider']}", '0', SystemMessage::MSG_ERROR);
                 }

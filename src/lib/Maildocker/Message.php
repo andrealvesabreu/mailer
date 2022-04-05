@@ -5,7 +5,7 @@ namespace Inspire\Mailer\Maildocker;
 use Nette\FileNotFoundException;
 
 /**
- * Description of Mail
+ * Description of Message
  * Based in https://github.com/maildocker/maildocker-php
  *
  * @author aalves
