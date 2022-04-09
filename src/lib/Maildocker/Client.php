@@ -138,12 +138,11 @@ class Client
             SystemMessage::MSG_ERROR, // Message code
             false);
         } else {
-            $resp = new SystemMessage('OK', // Message
+            return new SystemMessage('OK', // Message
             '1', // Status code
             SystemMessage::MSG_OK, // Message code
-            true);
-            $resp->addExtra((array) $response);
-            return $resp;
+            true, // Status
+            (array) $response); // Extra data
         }
     }
 }

@@ -576,11 +576,13 @@ class Message
                 if (! $transport !== null) {
                     // $mailer = new Mailer($transport);
                     $resp = $transport->send($email);
-                    $ok = new SystemMessage('Mail sent', '1', SystemMessage::MSG_OK);
-                    $ok->addExtra([
+                    return new SystemMessage('Mail sent', // Message
+                    '1', // System code
+                    SystemMessage::MSG_OK, // Message code
+                    null, // Status
+                    [
                         'id' => $resp->getMessageId()
-                    ]);
-                    return $ok;
+                    ]); // Extra data
                 } else {
                     return new SystemMessage("Invalid provider: {$configMail['provider']}", '0', SystemMessage::MSG_ERROR);
                 }
