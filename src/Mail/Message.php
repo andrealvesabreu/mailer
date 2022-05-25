@@ -307,17 +307,21 @@ class Message
      * Send email
      *
      * @param array $configMail
-     * @return SystemMessage
+     * @param bool $validateConfig
+     * @return SystemMessage|NULL
      */
-    public function send(array $configMail): ?SystemMessage
+    public function send(?array $configMail = [], bool $validateConfig = true): ?SystemMessage
     {
         try {
             /**
              * Validate mail data
+             * Be sure to validate configuration if you want bypass verification here
              */
-            $validate = $this->validate($configMail);
-            if (! $validate->isOk()) {
-                return $validate;
+            if ($validateConfig) {
+                $validate = $this->validate($configMail);
+                if (! $validate->isOk()) {
+                    return $validate;
+                }
             }
             /**
              * Maildocker service
@@ -462,7 +466,7 @@ class Message
                      * SMTP transport
                      */
                     case 'smtp':
-                        $transport = new \Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport($configMail['domain'], $configMail['port'] ?? 0, $configMail['$configMail'] ?? null);
+                        $transport = new \Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport($configMail['server'], $configMail['port'] ?? 0, $configMail['tls'] ?? null);
                         $transport->setUsername($configMail['username']);
                         $transport->setPassword($configMail['password']);
                         break;
@@ -611,7 +615,7 @@ class Message
             '0', //
             SystemMessage::MSG_ERROR, //
             false);
-            $syserror->setExtra(JsonValidator::getReadableErrors());
+            $syserror->setExtras(JsonValidator::getReadableErrors());
             return $syserror;
         }
 
