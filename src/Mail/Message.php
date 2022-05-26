@@ -292,8 +292,14 @@ class Message
     public function addAttachment(array $files): Message
     {
         if (is_array($files)) {
+            if (empty($files)) {
+                return $this;
+            }
             if (isset($files[0])) {
                 foreach ($files as $file) {
+                    if (empty($file)) {
+                        continue;
+                    }
                     $this->attachments[] = $file;
                 }
             } else {
