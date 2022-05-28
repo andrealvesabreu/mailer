@@ -16,7 +16,8 @@
 		"symfony/postmark-mailer" : "^5.3.4",
 		"symfony/sendgrid-mailer" : "^5.3.7",
 		"symfony/sendinblue-mailer" : "^5.3.4",
-		"symfony/oh-my-smtp-mailer" : "^5.4"
+		"symfony/oh-my-smtp-mailer" : "^5.4",
+		"inspire/validator" : "~0.1"
 	},
 	"name" : "inspire/mailer",
 	"license" : "MIT",

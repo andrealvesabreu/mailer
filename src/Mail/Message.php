@@ -9,6 +9,7 @@ use Symfony\Component\Mailer\ {
 use Inspire\Config\JsonValidator;
 use Inspire;
 use Inspire\Mailer\Maildocker\Message as MaildockerMessage;
+use Inspire\Support\Url;
 
 /**
  * Description of Message
@@ -456,9 +457,34 @@ class Message
                 /**
                  * Set Attachments
                  */
+                $ctAttach = 1;
                 foreach ($this->attachments as $attach) {
                     if (isset($attach['path'])) {
-                        $email->attachFromPath($attach['path'], $attach['name'] ?? null, $attach['content-type'] ?? null);
+                        if (Url::isUrl($attach['path'])) {
+                            if (Url::exists($attach['path'])) {
+                                $contentType = Url::headers($attach['path'], Url::CONTENT_TYPE);
+                                if ($attach['name'] == null) {
+                                    $extension = explode('/', trim(strtok($contentType, ';')));
+                                    $extension = end($extension);
+                                    $attach['name'] = "file_{$ctAttach}.{$extension}";
+                                    $ctAttach ++;
+                                }
+                                $attachContents = Url::getRawBody($attach['path']);
+                                $email->attach($attachContents, $attach['name'] ?? null, $contentType ?? null);
+                            } else {
+                                return new SystemMessage("Attachment not found: {$attach['path']}", // Error
+                                '0', // Code
+                                SystemMessage::MSG_ERROR); // Status
+                            }
+                        } else {
+                            if (file_exists($attach['path'])) {
+                                $email->attachFromPath($attach['path'], $attach['name'] ?? basename($attach['path']), $attach['content-type'] ?? null);
+                            } else {
+                                return new SystemMessage("Attachment not found: {$attach['path']}", // Error
+                                '0', // Code
+                                SystemMessage::MSG_ERROR); // Status
+                            }
+                        }
                     } else {
                         $email->attach($attach['body'], $attach['name'] ?? null, $attach['content-type'] ?? null);
                     }
