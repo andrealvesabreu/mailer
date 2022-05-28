@@ -391,13 +391,38 @@ class Message
                 /**
                  * Add attachments
                  */
-                foreach ($this->attachments as $attachment) {
-                    if (isset($attachment['path'])) {
-                        $email->addAttachment([
-                            $attachment['path']
-                        ]);
+                $ctAttach = 1;
+                foreach ($this->attachments as $attach) {
+                    if (isset($attach['path'])) {
+                        if (Url::isUrl($attach['path'])) {
+                            if (Url::exists($attach['path'])) {
+                                $contentType = trim(strtok(Url::headers($attach['path'], Url::CONTENT_TYPE), ';'));
+                                if ($attach['name'] == null) {
+                                    $extension = explode('/', $contentType);
+                                    $extension = end($extension);
+                                    $attach['name'] = "file_{$ctAttach}.{$extension}";
+                                    $ctAttach ++;
+                                }
+                                $attachContents = Url::getRawBody($attach['path']);
+                                $email->addAttachmentContents($attachContents, $attach['name'] ?? null, $contentType ?? null);
+                            } else {
+                                return new SystemMessage("Attachment not found: {$attach['path']}", // Error
+                                '0', // Code
+                                SystemMessage::MSG_ERROR); // Status
+                            }
+                        } else {
+                            if (file_exists($attach['path'])) {
+                                $email->addAttachment([
+                                    $attach['path']
+                                ]);
+                            } else {
+                                return new SystemMessage("Attachment not found: {$attach['path']}", // Error
+                                '0', // Code
+                                SystemMessage::MSG_ERROR); // Status
+                            }
+                        }
                     } else {
-                        $email->addAttachmentContents($attachment['body'], $attachment['name'], $attachment['content-type']);
+                        $email->addAttachmentContents($attach['body'], $attach['name'], $attach['content-type']);
                     }
                 }
                 /**
@@ -462,9 +487,9 @@ class Message
                     if (isset($attach['path'])) {
                         if (Url::isUrl($attach['path'])) {
                             if (Url::exists($attach['path'])) {
-                                $contentType = Url::headers($attach['path'], Url::CONTENT_TYPE);
+                                $contentType = trim(strtok(Url::headers($attach['path'], Url::CONTENT_TYPE), ';'));
                                 if ($attach['name'] == null) {
-                                    $extension = explode('/', trim(strtok($contentType, ';')));
+                                    $extension = explode('/', $contentType);
                                     $extension = end($extension);
                                     $attach['name'] = "file_{$ctAttach}.{$extension}";
                                     $ctAttach ++;
