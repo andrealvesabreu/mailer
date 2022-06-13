@@ -112,6 +112,31 @@ class Message
     protected array $mergeVars = [];
 
     /**
+     * Build message as array (PHP 8.1 compatibility)
+     *
+     * @return array
+     */
+    public function build(): array
+    {
+        return [
+            'from' => $this->from,
+            'to' => $this->to,
+            'cc' => $this->cc,
+            'bcc' => $this->bcc,
+            'subject' => $this->subject,
+            'text' => $this->text,
+            'html' => $this->html,
+            'template' => $this->template,
+            'replyTo' => $this->replyTo,
+            'date' => $this->date,
+            'headers' => $this->headers,
+            'images' => $this->images,
+            'attachments' => $this->attachments,
+            'mergeVars' => $this->mergeVars
+        ];
+    }
+
+    /**
      * Set FROM address
      *
      * @param string $address

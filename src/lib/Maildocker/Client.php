@@ -97,12 +97,7 @@ class Client
      */
     protected function build(Message $message): array
     {
-        $values = [];
-        foreach ((array) $message as $key => $value) {
-            if ($value) {
-                $values[$key] = $value;
-            }
-        }
+        $values = $message->build();
         return $values;
     }
 
