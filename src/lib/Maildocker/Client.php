@@ -90,25 +90,13 @@ class Client
     }
 
     /**
-     * Build a message
-     *
-     * @param Message $message
-     * @return array
-     */
-    protected function build(Message $message): array
-    {
-        $values = $message->build();
-        return $values;
-    }
-
-    /**
      * Send mail to API
      *
      * @param Message $message
      */
     public function send(Message $message): SystemMessage
     {
-        $data = str_replace('\u0000*\u0000', '', json_encode($this->build($message)));
+        $data = json_encode($message->build());
         $ch = curl_init($this->mailUrl);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             "Content-Type: application/json",
@@ -127,7 +115,7 @@ class Client
         $response = json_decode(curl_exec($ch));
         curl_close($ch);
         if ($response instanceof \stdClass && // In case of error
-        property_exists($response, 'user_message')) {
+            property_exists($response, 'user_message')) {
             return new SystemMessage($response->user_message, // Message
             '0', // Status code
             SystemMessage::MSG_ERROR, // Message code
