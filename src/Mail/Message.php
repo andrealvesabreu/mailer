@@ -432,7 +432,11 @@ class Message
                 /**
                  * Send email
                  */
-                return $mailer->send($email);
+                $send = $mailer->send($email);
+                if ($send->isOk()) {
+                    $send->setExtra('id', $send->getExtra()[0]->uuid);
+                }
+                return $send;
             } else {
                 $email = new \Symfony\Component\Mime\Email();
                 // // ->sender(empty($this->sender) ? $configMail->email : $this->sender)
