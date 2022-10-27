@@ -1,13 +1,14 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
+
 namespace Inspire\Mailer\Mail;
 
 use Inspire\Support\Message\System\SystemMessage;
-use Symfony\Component\Mailer\ {
+use Symfony\Component\Mailer\{
     Transport
 };
 use Inspire\Config\JsonValidator;
-use Inspire;
 use Inspire\Mailer\Maildocker\Message as MaildockerMessage;
 use Inspire\Support\Url;
 
@@ -115,7 +116,7 @@ class Message
         $this->from = [
             'address' => $address
         ];
-        if ($name && ! empty($name)) {
+        if ($name && !empty($name)) {
             $this->from['name'] = $name;
         }
         return $this;
@@ -130,7 +131,7 @@ class Message
      */
     protected function addMail(string $field, string $address, ?string $name = null, bool $unique = false): Message
     {
-        if (! in_array($field, [
+        if (!in_array($field, [
             'to',
             'cc',
             'bcc',
@@ -141,7 +142,7 @@ class Message
         $mail = [
             'address' => $address
         ];
-        if ($name && ! empty($name)) {
+        if ($name && !empty($name)) {
             $mail['name'] = $name;
         }
         if ($unique) {
@@ -160,7 +161,7 @@ class Message
      */
     protected function addMails(string $field, array $mails): Message
     {
-        if (! in_array($field, [
+        if (!in_array($field, [
             'to',
             'cc',
             'bcc',
@@ -169,7 +170,7 @@ class Message
             throw new \Exception("Invalid mail field type: {$field}");
         }
         foreach ($mails as $address => $name) {
-            if (! empty($address)) {
+            if (!empty($address)) {
                 $this->addMail($field, $address, $name);
             } else {
                 $this->addMail($field, $name);
@@ -326,7 +327,7 @@ class Message
              */
             if ($validateConfig) {
                 $validate = $this->validate($configMail);
-                if (! $validate->isOk()) {
+                if (!$validate->isOk()) {
                     return $validate;
                 }
             }
@@ -337,7 +338,8 @@ class Message
                 /**
                  * Maildocker message
                  */
-                $email = (new MaildockerMessage())->setSubject($this->subject)
+                $email = (new MaildockerMessage())
+                    ->setSubject($this->subject)
                     ->setText($this->text['text'] ?? '')
                     ->setHtml($this->html['text'] ?? '');
                 /**
@@ -361,7 +363,7 @@ class Message
                  */
                 foreach ($this->cc as $cc) {
                     if (filter_var($cc['address'], FILTER_VALIDATE_EMAIL)) {
-                        if (! $hasTo) {
+                        if (!$hasTo) {
                             $email->addTo($cc['address'], $cc['name']);
                             $hasTo = true;
                         } else {
@@ -374,7 +376,7 @@ class Message
                  */
                 foreach ($this->bcc as $bcc) {
                     if (filter_var($bcc['address'], FILTER_VALIDATE_EMAIL)) {
-                        if (! $hasTo) {
+                        if (!$hasTo) {
                             $email->addTo($bcc['address'], $bcc['name']);
                             $hasTo = true;
                         } else {
@@ -385,7 +387,7 @@ class Message
                 /**
                  * Set Reply-to
                  */
-                if (! empty($this->replyTo) && filter_var($this->replyTo['address'], FILTER_VALIDATE_EMAIL)) {
+                if (!empty($this->replyTo) && filter_var($this->replyTo['address'], FILTER_VALIDATE_EMAIL)) {
                     $email->setReplyto($this->replyTo['address'], $this->replyTo['name'] ?? $this->replyTo['address']);
                 }
                 /**
@@ -401,14 +403,16 @@ class Message
                                     $extension = explode('/', $contentType);
                                     $extension = end($extension);
                                     $attach['name'] = "file_{$ctAttach}.{$extension}";
-                                    $ctAttach ++;
+                                    $ctAttach++;
                                 }
                                 $attachContents = Url::getRawBody($attach['path']);
                                 $email->addAttachmentContents($attachContents, $attach['name'] ?? null, $contentType ?? null);
                             } else {
-                                return new SystemMessage("Attachment not found: {$attach['path']}", // Error
-                                '0', // Code
-                                SystemMessage::MSG_ERROR); // Status
+                                return new SystemMessage(
+                                    "Attachment not found: {$attach['path']}", // Error
+                                    '0', // Code
+                                    SystemMessage::MSG_ERROR // Status
+                                );
                             }
                         } else {
                             if (file_exists($attach['path'])) {
@@ -416,9 +420,11 @@ class Message
                                     $attach['path']
                                 ]);
                             } else {
-                                return new SystemMessage("Attachment not found: {$attach['path']}", // Error
-                                '0', // Code
-                                SystemMessage::MSG_ERROR); // Status
+                                return new SystemMessage(
+                                    "Attachment not found: {$attach['path']}", // Error
+                                    '0', // Code
+                                    SystemMessage::MSG_ERROR // Status
+                                );
                             }
                         }
                     } else {
@@ -441,7 +447,7 @@ class Message
                 $email = new \Symfony\Component\Mime\Email();
                 // // ->sender(empty($this->sender) ? $configMail->email : $this->sender)
                 $email->subject($this->subject)
-                    ->priority(empty($this->priority) ? $configMail->prioridade : $this->priority)
+                    ->priority(empty($this->priority) ? $configMail['priority'] : $this->priority)
                     ->html($this->html['text'], $this->html['charset'])
                     ->text($this->html['text'], $this->html['charset']);
                 /**
@@ -496,22 +502,26 @@ class Message
                                     $extension = explode('/', $contentType);
                                     $extension = end($extension);
                                     $attach['name'] = "file_{$ctAttach}.{$extension}";
-                                    $ctAttach ++;
+                                    $ctAttach++;
                                 }
                                 $attachContents = Url::getRawBody($attach['path']);
                                 $email->attach($attachContents, $attach['name'] ?? null, $contentType ?? null);
                             } else {
-                                return new SystemMessage("Attachment not found: {$attach['path']}", // Error
-                                '0', // Code
-                                SystemMessage::MSG_ERROR); // Status
+                                return new SystemMessage(
+                                    "Attachment not found: {$attach['path']}", // Error
+                                    '0', // Code
+                                    SystemMessage::MSG_ERROR // Status
+                                );
                             }
                         } else {
                             if (file_exists($attach['path'])) {
                                 $email->attachFromPath($attach['path'], $attach['name'] ?? basename($attach['path']), $attach['content-type'] ?? null);
                             } else {
-                                return new SystemMessage("Attachment not found: {$attach['path']}", // Error
-                                '0', // Code
-                                SystemMessage::MSG_ERROR); // Status
+                                return new SystemMessage(
+                                    "Attachment not found: {$attach['path']}", // Error
+                                    '0', // Code
+                                    SystemMessage::MSG_ERROR // Status
+                                );
                             }
                         }
                     } else {
@@ -523,7 +533,7 @@ class Message
                  */
                 $transport = null;
                 switch ($configMail['provider']) {
-                    /**
+                        /**
                      * SMTP transport
                      */
                     case 'smtp':
@@ -531,9 +541,9 @@ class Message
                         $transport->setUsername($configMail['username']);
                         $transport->setPassword($configMail['password']);
                         break;
-                    /**
-                     * SES transport
-                     */
+                        /**
+                         * SES transport
+                         */
                     case 'ses':
                         switch ($configMail['driver']) {
                             case 'api':
@@ -547,15 +557,15 @@ class Message
                                 break;
                         }
                         break;
-                    /**
-                     * Gmail transport
-                     */
+                        /**
+                         * Gmail transport
+                         */
                     case 'gmail':
                         $transport = new \Symfony\Component\Mailer\Bridge\Google\Transport\GmailSmtpTransport($configMail['username'], $configMail['password']);
                         break;
-                    /**
-                     * Mailgun transport
-                     */
+                        /**
+                         * Mailgun transport
+                         */
                     case 'mailgun':
                         switch ($configMail['driver']) {
                             case 'api':
@@ -569,9 +579,9 @@ class Message
                                 break;
                         }
                         break;
-                    /**
-                     * Mailjet transport
-                     */
+                        /**
+                         * Mailjet transport
+                         */
                     case 'mailjet':
                         switch ($configMail['driver']) {
                             case 'api':
@@ -583,9 +593,9 @@ class Message
                         }
                         break;
 
-                    /**
-                     * Postmark transport
-                     */
+                        /**
+                         * Postmark transport
+                         */
                     case 'postmark':
                         switch ($configMail['driver']) {
                             case 'api':
@@ -597,9 +607,9 @@ class Message
                         }
                         break;
 
-                    /**
-                     * SendGrid transport
-                     */
+                        /**
+                         * SendGrid transport
+                         */
                     case 'sendgrid':
                         switch ($configMail['driver']) {
                             case 'smtp':
@@ -610,9 +620,9 @@ class Message
                                 break;
                         }
                         break;
-                    /**
-                     * Sendinblue transport
-                     */
+                        /**
+                         * Sendinblue transport
+                         */
                     case 'sendinblue':
                         switch ($configMail['driver']) {
                             case 'api':
@@ -623,9 +633,9 @@ class Message
                                 break;
                         }
                         break;
-                    /**
-                     * Sendinblue transport
-                     */
+                        /**
+                         * Sendinblue transport
+                         */
                     case 'ohmysmtp':
                         switch ($configMail['driver']) {
                             case 'api':
@@ -638,16 +648,18 @@ class Message
                         break;
                 }
 
-                if (! $transport !== null) {
+                if (!$transport !== null) {
                     // $mailer = new Mailer($transport);
                     $resp = $transport->send($email);
-                    return new SystemMessage('Mail sent', // Message
-                    '1', // System code
-                    SystemMessage::MSG_OK, // Message code
-                    null, // Status
-                    [
-                        'id' => $resp->getMessageId()
-                    ]); // Extra data
+                    return new SystemMessage(
+                        'Mail sent', // Message
+                        '1', // System code
+                        SystemMessage::MSG_OK, // Message code
+                        null, // Status
+                        [
+                            'id' => $resp->getMessageId()
+                        ]
+                    ); // Extra data
                 } else {
                     return new SystemMessage("Invalid provider: {$configMail['provider']}", '0', SystemMessage::MSG_ERROR);
                 }
@@ -669,13 +681,15 @@ class Message
          * Validate configuration
          */
         $schema = dirname(dirname(__DIR__)) . "/schemas/provider_config.json";
-        if (! JsonValidator::validateJson(json_encode([
+        if (!JsonValidator::validateJson(json_encode([
             $configMail
         ]), $schema)) {
-            $syserror = new SystemMessage('Invalid configuration', //
-            '0', //
-            SystemMessage::MSG_ERROR, //
-            false);
+            $syserror = new SystemMessage(
+                'Invalid configuration', //
+                '0', //
+                SystemMessage::MSG_ERROR, //
+                false
+            );
             $syserror->setExtras(JsonValidator::getReadableErrors());
             return $syserror;
         }
@@ -695,12 +709,14 @@ class Message
          * Validating mail data
          */
         $schema = dirname(dirname(__DIR__)) . "/schemas/mail.json";
-        if (! JsonValidator::validateJson(json_encode($mail), $schema)) {
-            $syserror = new SystemMessage('Invalid message', //
-            '0', //
-            SystemMessage::MSG_ERROR, //
-            false);
-            $syserror->setExtra(JsonValidator::getReadableErrors());
+        if (!JsonValidator::validateJson(json_encode($mail), $schema)) {
+            $syserror = new SystemMessage(
+                'Invalid message', //
+                '0', //
+                SystemMessage::MSG_ERROR, //
+                false
+            );
+            $syserror->setExtras(JsonValidator::getReadableErrors());
             return $syserror;
         }
         /**
@@ -709,4 +725,3 @@ class Message
         return new SystemMessage('OK', 'OK');
     }
 }
-

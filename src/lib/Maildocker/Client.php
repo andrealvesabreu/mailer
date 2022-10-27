@@ -1,5 +1,7 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
+
 namespace Inspire\Mailer\Maildocker;
 
 use Inspire\Support\Message\System\SystemMessage;
@@ -114,18 +116,24 @@ class Client
         ]);
         $response = json_decode(curl_exec($ch));
         curl_close($ch);
-        if ($response instanceof \stdClass && // In case of error
-            property_exists($response, 'user_message')) {
-            return new SystemMessage($response->user_message, // Message
-            '0', // Status code
-            SystemMessage::MSG_ERROR, // Message code
-            false);
+        if (
+            $response instanceof \stdClass && // In case of error
+            property_exists($response, 'user_message')
+        ) {
+            return new SystemMessage(
+                $response->user_message, // Message
+                '0', // Status code
+                SystemMessage::MSG_ERROR, // Message code
+                false
+            );
         } else {
-            return new SystemMessage('OK', // Message
-            '1', // Status code
-            SystemMessage::MSG_OK, // Message code
-            true, // Status
-            (array) $response); // Extra data
+            return new SystemMessage(
+                'OK', // Message
+                '1', // Status code
+                SystemMessage::MSG_OK, // Message code
+                true, // Status
+                (array) $response
+            ); // Extra data
         }
     }
 }

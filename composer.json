@@ -6,8 +6,7 @@
 		}
 	},
 	"require" : {
-		"inspire/core" : "^0.1.0",
-		"inspire/queue" : "^0.1.0",
+		"inspire/queue" : "^0.1.2",
 		"symfony/amazon-mailer" : "^5.3.4",
 		"symfony/google-mailer" : "^5.3.0",
 		"symfony/mailchimp-mailer" : "^5.3.4",

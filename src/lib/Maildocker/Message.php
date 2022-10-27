@@ -1,5 +1,7 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
+
 namespace Inspire\Mailer\Maildocker;
 
 use Nette\FileNotFoundException;
@@ -148,7 +150,7 @@ class Message
         $this->from = array(
             'email' => $address
         );
-        if ($name && ! empty($name)) {
+        if ($name && !empty($name)) {
             $this->from['name'] = $name;
         }
         return $this;
@@ -167,7 +169,7 @@ class Message
             $mail = array(
                 'email' => $address
             );
-            if ($name && ! empty($name)) {
+            if ($name && !empty($name)) {
                 $mail['name'] = $name;
             }
             $this->{$field}[] = $mail;
@@ -322,7 +324,7 @@ class Message
      */
     protected function addFile(string $field, string $file, ?string $name = null)
     {
-        if (! file_exists($file)) {
+        if (!file_exists($file)) {
             throw new FileNotFoundException("File '{$file}' does not exists!");
         }
         $handle = fopen($file, 'rb');
